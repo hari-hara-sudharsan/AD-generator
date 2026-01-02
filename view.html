@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>View Generated Ad Image</title>
+  </head>
+  <body>
+    <h2>Paste response (JSON or data URL) here:</h2>
+
+    <textarea
+      id="src"
+      style="width:100%;height:150px;"
+      placeholder='Paste the response from /generate here'
+    ></textarea>
+    <br /><br />
+
+    <button onclick="show()">Show Image</button>
+
+    <h3>Output:</h3>
+    <div id="out"></div>
+
+    <script>
+      function show() {
+        const raw = document.getElementById('src').value.trim();
+        if (!raw) {
+          alert('Paste something first');
+          return;
+        }
+
+        let url = raw;
+
+        // If user pasted full JSON, extract data.landscape
+        if (raw.startsWith('{')) {
+          try {
+            const obj = JSON.parse(raw);
+            if (obj.data && obj.data.landscape) {
+              url = obj.data.landscape;
+            } else {
+              alert('JSON does not contain data.landscape');
+              return;
+            }
+          } catch (e) {
+            alert('Invalid JSON. Either paste full JSON or just the data URL.');
+            return;
+          }
+        }
+
+        // Basic validation
+        if (!url.startsWith('data:image')) {
+          alert('Result is not a data:image URL');
+          return;
+        }
+
+        const img = new Image();
+        img.src = url;
+        img.style.maxWidth = '400px';
+        img.style.border = '1px solid #ccc';
+        img.onload = () => console.log('Image loaded');
+        img.onerror = () => alert('Failed to load image from data URL');
+
+        const out = document.getElementById('out');
+        out.innerHTML = '';
+        out.appendChild(img);
+      }
+    </script>
+  </body>
+</html>

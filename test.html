@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+  <body>
+    <h3>Generate ad image</h3>
+    <form id="f">
+      <label>
+        Headline:
+        <input id="headline" value="NEW LOOK - SAME AWARD WINNING TASTE" />
+      </label>
+      <br />
+      <label>
+        Product:
+        <input id="product" value="Brancott Wine" />
+      </label>
+      <br /><br />
+      <button>Generate</button>
+    </form>
+
+    <p>Result:</p>
+    <img id="img" style="max-width:400px;border:1px solid #ccc" />
+
+    <script>
+      document.getElementById('f').onsubmit = async (e) => {
+        e.preventDefault();
+        const body = {
+          headline: document.getElementById('headline').value,
+          productName: document.getElementById('product').value,
+        };
+        const res = await fetch('http://localhost:5000/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const blob = await res.blob();
+        document.getElementById('img').src = URL.createObjectURL(blob);
+      };
+    </script>
+  </body>
+</html>
